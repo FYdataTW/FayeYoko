@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FayeYoko Media Exposure</title>
   <style>
     body {
@@ -10,6 +10,7 @@
       font-family: 'Helvetica Neue', sans-serif;
       background-color: #f9f9f9;
       color: #333;
+      padding: 1rem;
     }
     header {
       background-color: #fff;
@@ -49,12 +50,36 @@
       font-size: 0.9rem;
       color: #aaa;
     }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 600px) {
+      header {
+        padding: 1rem;
+      }
+      nav a {
+        display: block;
+        margin: 0.5rem 0;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      h2 {
+        font-size: 1.2rem;
+      }
+      main {
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>FayeYoko 媒體曝光總覽</h1>
-    <nav>
+    <nav class="nav">
       <a href="#about">關於本站</a>
       <a href="#media">媒體清單</a>
       <a href="#analytics">趨勢分析</a>

@@ -1,35 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FayeYoko Media Exposure</title>
   <style>
+    html {
+      scroll-behavior: smooth; /* 平滑滾動設定 */
+    }
     body {
       margin: 0;
-      font-family: 'Helvetica Neue', sans-serif;
+      font-family: 'Helvetica Neue', 'Arial', sans-serif;
       background-color: #f9f9f9;
       color: #333;
       padding: 1rem;
+      overflow-x: hidden;
     }
     header {
       background-color: #fff;
-      padding: 2rem;
+      padding: 1.5rem;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      text-align: center;
+      position: relative;
+      z-index: 20;
     }
     header h1 {
       margin: 0;
       font-size: 2rem;
+      text-align: center;
+    }
+    .menu-toggle {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 1.8rem;
+      cursor: pointer;
+      user-select: none;
+      z-index: 30;
     }
     nav {
-      margin-top: 1rem;
+      position: fixed;
+      top: 0;
+      right: -250px;
+      width: 250px;
+      height: 100%;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 4rem;
+      transition: right 0.4s ease;
+      z-index: 25;
     }
     nav a {
-      margin: 0 1rem;
+      margin: 1rem 0;
       text-decoration: none;
-      color: #0070f3;
+      color: #333;
       font-weight: 500;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #0070f3;
+    }
+    nav.show {
+      right: 0;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 15;
+    }
+    .overlay.show {
+      display: block;
+      animation: fadeIn 0.5s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     main {
       padding: 2rem;
@@ -50,62 +101,120 @@
       font-size: 0.9rem;
       color: #aaa;
     }
-    img {
-      max-width: 100%;
-      height: auto;
+    /* 回到頂端按鈕 */
+    #backToTop {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #0070f3;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      padding: 0.8rem 1rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 50;
+      transition: background 0.3s, transform 0.3s;
     }
-
-    /* 響應式設計 */
+    #backToTop:hover {
+      background-color: #0056c0;
+      transform: scale(1.1);
+    }
     @media (max-width: 600px) {
-      header {
-        padding: 1rem;
-      }
-      nav a {
-        display: block;
-        margin: 0.5rem 0;
-      }
-      h1 {
+      header h1 {
         font-size: 1.5rem;
       }
-      h2 {
-        font-size: 1.2rem;
+      .menu-toggle {
+        font-size: 1.6rem;
       }
       main {
         padding: 1rem;
+      }
+      section {
+        margin-bottom: 1.5rem;
+      }
+      footer {
+        font-size: 0.8rem;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>FayeYoko 媒體曝光總覽</h1>
-    <nav class="nav">
-      <a href="#about">關於本站</a>
-      <a href="#media">媒體清單</a>
-      <a href="#analytics">趨勢分析</a>
-      <a href="#submit">補充資料</a>
-    </nav>
-  </header>
-  <main>
-    <section id="about">
-      <h2>關於本站</h2>
-      <p>此站收錄與呈現 FayeYoko 在社群與媒體中的曝光紀錄，整理平台來源、互動數據與時間軸，讓粉絲與關注者清楚掌握她們的影響力擴散軌跡。</p>
-    </section>
-    <section id="media">
-      <h2>媒體清單</h2>
-      <p>即將嵌入資料表，可來自 Google Sheets、Notion 或自架 API。</p>
-    </section>
-    <section id="analytics">
-      <h2>趨勢分析</h2>
-      <p>此區域將整合曝光量趨勢圖、熱門平台統計與地區熱度排行。</p>
-    </section>
-    <section id="submit">
-      <h2>補充資料</h2>
-      <p>若您發現尚未收錄的曝光紀錄，可透過 <a href="https://forms.gle/xxxxx" target="_blank">這份表單</a> 協助補充，謝謝您的參與！</p>
-    </section>
-  </main>
-  <footer>
-    Powered by FYdataTW · 網頁版本 1.0
-  </footer>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<header>
+  <h1>FayeYoko 媒體曝光總覽</h1>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+</header>
+
+<nav id="menu">
+  <a href="#about" onclick="toggleMenu()">關於本站</a>
+  <a href="#events" onclick="toggleMenu()">最新活動</a>
+  <a href="#media" onclick="toggleMenu()">媒體清單</a>
+  <a href="#analytics" onclick="toggleMenu()">趨勢分析</a>
+  <a href="#submit" onclick="toggleMenu()">補充資料</a>
+</nav>
+
+<main>
+  <section id="about">
+    <h2>關於本站</h2>
+    <p>此站收錄與呈現 FayeYoko 在社群與媒體中的曝光紀錄，整理平台來源、互動數據與時間軸，讓粉絲與關注者清楚掌握她們的影響力擴散軌跡。</p>
+  </section>
+
+  <section id="events">
+    <h2>最新活動</h2>
+    <p>最新的官方活動、見面會資訊與媒體公開行程，將會在此更新。</p>
+  </section>
+
+  <section id="media">
+    <h2>媒體清單</h2>
+    <p>即將嵌入資料表，可來自 Google Sheets、Notion 或自架 API。</p>
+  </section>
+
+  <section id="analytics">
+    <h2>趨勢分析</h2>
+    <p>此區域將整合曝光量趨勢圖、熱門平台統計與地區熱度排行。</p>
+  </section>
+
+  <section id="submit">
+    <h2>補充資料</h2>
+    <p>若您發現尚未收錄的曝光紀錄，可透過 <a href="https://forms.gle/xxxxx" target="_blank">這份表單</a> 協助補充，謝謝您的參與！</p>
+  </section>
+</main>
+
+<footer>
+  Powered by FYdataTW · 網頁版本 1.0
+</footer>
+
+<!-- 回到頂端按鈕 -->
+<button onclick="scrollToTop()" id="backToTop">↑</button>
+
+<script>
+  function toggleMenu() {
+    var menu = document.getElementById('menu');
+    var overlay = document.getElementById('overlay');
+    menu.classList.toggle('show');
+    overlay.classList.toggle('show');
+  }
+
+  // 顯示/隱藏回到頂端按鈕
+  window.onscroll = function() {
+    var btn = document.getElementById('backToTop');
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  };
+
+  // 點擊返回頂端
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
 </body>
 </html>
